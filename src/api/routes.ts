@@ -149,6 +149,22 @@ export function createRouter(): Router {
       if (!evaluated.isValid) return res.status(422).json({ error: 'Errores de validación', field_errors: evaluated.errors })
 
       const sanitized = engine.sanitizeData(data)
+
+      // Verificar duplicados por dato maestro
+      if (form.lookup?.trigger_field) {
+        const triggerField = form.lookup.trigger_field
+        const triggerValue = String(sanitized[triggerField] ?? '')
+        if (triggerValue) {
+          const existing = await submissionsRepo.findCompleted(form.id, triggerField, triggerValue)
+          if (existing) {
+            return res.status(422).json({
+              error: 'Ya existe un registro completado con este dato',
+              field_errors: { [triggerField]: ['Ya existe un registro con este valor'] }
+            })
+          }
+        }
+      }
+
       let pricingSnapshot: Submission['pricing_snapshot'] | undefined
       let paymentIntentClientSecret: string | undefined
       let paymentIntentId: string | undefined

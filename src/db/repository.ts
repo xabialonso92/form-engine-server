@@ -139,6 +139,20 @@ export const submissionsRepo = {
 
   // ── Dashboard ──────────────────────────────────────────────
 
+
+  async findCompleted(formId: string, field: string, value: string): Promise<Submission | null> {
+    const safeField = field.replace(/[^a-z_]/gi, '')
+    const rows = await query(
+      `SELECT id FROM submissions
+       WHERE form_id = $1
+         AND data->>'${safeField}' = $2
+         AND status = 'completed'
+       LIMIT 1`,
+      [formId, value]
+    )
+    return rows[0] ?? null
+  },
+
   async findByForm({ formId, limit, offset, status, search }: {
     formId: string; limit: number; offset: number; status?: string; search?: string
   }): Promise<{ rows: Submission[]; total: number }> {

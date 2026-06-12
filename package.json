@@ -1,0 +1,33 @@
+{
+  "name": "form-engine-server",
+  "version": "1.0.0",
+  "description": "Form Engine API — Railway deploy",
+  "main": "dist/server.js",
+  "scripts": {
+    "build":   "tsc",
+    "start":   "node dist/server.js",
+    "dev":     "ts-node src/server.ts",
+    "migrate": "node dist/db/migrate.js"
+  },
+  "dependencies": {
+    "cors":               "^2.8.5",
+    "dotenv":             "^16.4.5",
+    "express":            "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "helmet":             "^7.1.0",
+    "ioredis":            "^5.3.2",
+    "pg":                 "^8.11.5",
+    "stripe":             "^15.7.0",
+    "uuid":               "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/cors":       "^2.8.17",
+    "@types/express":    "^4.17.21",
+    "@types/node":       "^20.12.7",
+    "@types/pg":         "^8.11.5",
+    "@types/uuid":       "^9.0.8",
+    "ts-node":           "^10.9.2",
+    "typescript":        "^5.4.5"
+  },
+  "engines": { "node": ">=18.0.0" }
+}

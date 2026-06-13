@@ -150,16 +150,16 @@ export function createRouter(): Router {
 
       const sanitized = engine.sanitizeData(data)
 
-      // Verificar duplicados por dato maestro
-      if (form.lookup?.trigger_field) {
-        const triggerField = form.lookup.trigger_field
-        const triggerValue = String(sanitized[triggerField] ?? '')
+      // Verificar duplicados por campo con lookup_target: true
+      const lookupField = form.fields.find((f: any) => f.lookup_target)
+      if (lookupField) {
+        const triggerValue = String(sanitized[lookupField.id] ?? '')
         if (triggerValue) {
-          const existing = await submissionsRepo.findCompleted(form.id, triggerField, triggerValue)
+          const existing = await submissionsRepo.findCompleted(form.id, lookupField.id, triggerValue)
           if (existing) {
             return res.status(422).json({
               error: 'Ya existe un registro completado con este dato',
-              field_errors: { [triggerField]: ['Ya existe un registro con este valor'] }
+              field_errors: { [lookupField.id]: ['Ya existe un registro con este valor'] }
             })
           }
         }
